@@ -3,7 +3,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-only-key")
 DEBUG = os.getenv("DEBUG", "1") == "1"
-ALLOWED_HOSTS = [".vercel.app", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = [".vercel.app", "localhost", "127.0.0.1","mdbarish.in"]
 INSTALLED_APPS = ["django.contrib.staticfiles", "portfolio"]
 MIDDLEWARE = ["django.middleware.security.SecurityMiddleware", "django.middleware.csrf.CsrfViewMiddleware"]
 ROOT_URLCONF = "config.urls"
