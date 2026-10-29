@@ -13,4 +13,4 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {}
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "public" / "static"]  # on Vercel, /public is served as static
-CSRF_TRUSTED_ORIGINS = ["https://*.vercel.app"]
+CSRF_TRUSTED_ORIGINS = ["mdbarish.in"]
