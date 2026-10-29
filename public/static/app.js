@@ -18,11 +18,12 @@ btn.onclick = async () => {
     st.textContent = 'Dialing…';
     const {url, token} = await (await post('/api/call-token')).json();
     room = new LivekitClient.Room();
-    room.on(LivekitClient.RoomEvent.TrackSubscribed, tr => { if (tr.kind === 'audio') { document.body.append(tr.attach()); st.textContent = 'AI joined. Say hello.'; } });
+    room.on(LivekitClient.RoomEvent.TrackSubscribed, tr => { if (tr.kind === 'audio') { const el = tr.attach(); el.autoplay = true; el.muted = false; el.volume = 1; document.body.append(el); st.textContent = 'AI joined. Say hello.';
+      el.play().catch(() => { st.textContent = 'Tap anywhere on the page to turn on sound.'; document.body.addEventListener('click', () => { el.play(); room && room.startAudio(); }, {once: true}); }); } });
     room.on(LivekitClient.RoomEvent.ActiveSpeakersChanged, sp => { if (sp.some(p => !p.isLocal)) st.textContent = 'AI is speaking…'; });
     room.on(LivekitClient.RoomEvent.Disconnected, () => { room = null; btn.textContent = 'Call my AI'; btn.classList.remove('live'); st.textContent = 'Call ended.'; });
     room.on(LivekitClient.RoomEvent.AudioPlaybackStatusChanged, () => { if (!room.canPlaybackAudio) st.textContent = 'Tap anywhere on the page to turn on sound.'; });
-    await room.connect(url, token); await room.startAudio(); await room.localParticipant.setMicrophoneEnabled(true);
+    await room.connect(url, token); await room.startAudio(); await room.localParticipant.setMicrophoneEnabled(true, {echoCancellation: true, noiseSuppression: true, autoGainControl: true});
     document.body.addEventListener('click', () => room && room.startAudio(), {once: true});
     btn.textContent = 'End call'; btn.classList.add('live'); st.textContent = 'Connected. Say hello and ask about my projects.';
   } catch { room = null; st.textContent = 'Could not start the call. Allow the microphone, or try the chat below.'; }
