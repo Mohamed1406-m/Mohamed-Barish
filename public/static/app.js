@@ -20,7 +20,9 @@ btn.onclick = async () => {
     room = new LivekitClient.Room();
     room.on(LivekitClient.RoomEvent.TrackSubscribed, tr => { if (tr.kind === 'audio') document.body.append(tr.attach()); });
     room.on(LivekitClient.RoomEvent.Disconnected, () => { room = null; btn.textContent = 'Call my AI'; btn.classList.remove('live'); st.textContent = 'Call ended.'; });
-    await room.connect(url, token); await room.localParticipant.setMicrophoneEnabled(true);
+    room.on(LivekitClient.RoomEvent.AudioPlaybackStatusChanged, () => { if (!room.canPlaybackAudio) st.textContent = 'Tap anywhere on the page to turn on sound.'; });
+    await room.connect(url, token); await room.startAudio(); await room.localParticipant.setMicrophoneEnabled(true);
+    document.body.addEventListener('click', () => room && room.startAudio(), {once: true});
     btn.textContent = 'End call'; btn.classList.add('live'); st.textContent = 'Connected. Say hello and ask about my projects.';
   } catch { room = null; st.textContent = 'Could not start the call. Allow the microphone, or try the chat below.'; }
 };
