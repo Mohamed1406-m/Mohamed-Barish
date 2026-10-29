@@ -1,0 +1,3 @@
+Django>=5.0,<5.3
+openai>=1.40
+livekit-api>=0.7

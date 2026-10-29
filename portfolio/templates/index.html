@@ -1,0 +1,30 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="csrf" content="{{ csrf_token }}">
+<title>M Mohamed Barish · Python AI Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Instrument+Sans:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css"></head><body>
+<header class="board"><span>MOHAMED BARISH</span><nav><a href="#work">Work</a><a href="#stack">Stack</a><a href="#talk">Talk to my AI</a></nav></header>
+<main>
+<section class="hero">
+<h1>I build the AI that answers when a city calls.</h1>
+<p>Python and Django engineer in Chennai. Voice agents, WhatsApp bots and vision checks now running for three municipal corporations.</p>
+<div class="cta"><button id="callBtn" class="call">Call my AI</button><a href="#talk" class="ghost">Chat instead</a></div>
+<p id="callState" class="state" role="status"></p>
+</section>
+<section id="work"><h2>Work in the field</h2>
+<article class="row"><b>Greater Chennai Corp</b><div><h3>Image Analysis App</h3><p>Officers close complaints only after OpenAI Vision confirms the before and after photos.</p></div></article>
+<article class="row"><b>Tambaram Corp</b><div><h3>WhatsApp complaint bot</h3><p>Citizens raise and track complaints on the official WhatsApp API, in their language, with hand-off to a human.</p></div></article>
+<article class="row"><b>Chennai Corp</b><div><h3>Social Media Command Center</h3><p>Twitter and WhatsApp complaints scored for urgency and routed to zone officers live.</p></div></article>
+<article class="row"><b>Karur Municipal Corp</b><div><h3>PGR portal and WhatsApp</h3><p>Grievance workflow with status checks and notifications over WhatsApp.</p></div></article>
+<article class="row"><b>Government</b><div><h3>Face attendance, pothole and street board AI</h3><p>Amazon Rekognition attendance, pothole measurement and GPS-checked board verification.</p></div></article>
+<article class="row"><b>M7 Corporation</b><div><h3>AI Voice Calling Agent</h3><p>LiveKit and WebRTC calls: speech to LLM to speech, with tools that read live records. Try it above.</p></div></article>
+</section>
+<section id="stack"><h2>Stack</h2><p class="stack">Python · Django · DRF · Celery · Redis · PostgreSQL · LangChain · OpenAI · FAISS · ChromaDB · LiveKit · WebRTC · WhatsApp Business API · Amazon Rekognition · React</p></section>
+<section id="talk"><h2>Ask my AI</h2>
+<div class="chat"><div id="log" aria-live="polite"><div class="b bot">Hi. Ask me about Barish's projects, skills or how to hire him.</div></div>
+<form id="f"><input id="q" placeholder="e.g. What did he build for Tambaram?" maxlength="300" autocomplete="off"><button>Send</button></form></div></section>
+</main>
+<footer>mdbarish1502@gmail.com · <a href="https://linkedin.com/in/mohamed-barish-0191aa27a">LinkedIn</a> · Chennai</footer>
+<script src="https://cdn.jsdelivr.net/npm/livekit-client@2.5.7/dist/livekit-client.umd.min.js"></script>
+<script src="/static/app.js"></script></body></html>
