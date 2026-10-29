@@ -18,7 +18,8 @@ btn.onclick = async () => {
     st.textContent = 'Dialing…';
     const {url, token} = await (await post('/api/call-token')).json();
     room = new LivekitClient.Room();
-    room.on(LivekitClient.RoomEvent.TrackSubscribed, tr => { if (tr.kind === 'audio') document.body.append(tr.attach()); });
+    room.on(LivekitClient.RoomEvent.TrackSubscribed, tr => { if (tr.kind === 'audio') { document.body.append(tr.attach()); st.textContent = 'AI joined. Say hello.'; } });
+    room.on(LivekitClient.RoomEvent.ActiveSpeakersChanged, sp => { if (sp.some(p => !p.isLocal)) st.textContent = 'AI is speaking…'; });
     room.on(LivekitClient.RoomEvent.Disconnected, () => { room = null; btn.textContent = 'Call my AI'; btn.classList.remove('live'); st.textContent = 'Call ended.'; });
     room.on(LivekitClient.RoomEvent.AudioPlaybackStatusChanged, () => { if (!room.canPlaybackAudio) st.textContent = 'Tap anywhere on the page to turn on sound.'; });
     await room.connect(url, token); await room.startAudio(); await room.localParticipant.setMicrophoneEnabled(true);
