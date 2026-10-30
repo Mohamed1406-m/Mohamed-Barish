@@ -77,15 +77,19 @@ MEDIA_ROOT = BASE_DIR / "media"
 # Neon S3-compatible storage for media files (profile photos, project images)
 _S3_ENDPOINT = os.getenv("AWS_ENDPOINT_URL_S3")
 if _S3_ENDPOINT:
-    DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+    STORAGES = {
+        "default": {"BACKEND": "storages.backends.s3boto3.S3Boto3Storage"},
+        "staticfiles": {"BACKEND": "whitenoise.storage.CompressedStaticFilesStorage"},
+    }
     AWS_ENDPOINT_URL_S3 = _S3_ENDPOINT
     AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
     AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
     AWS_REGION_NAME = os.getenv("AWS_REGION", "ap-southeast-1")
     AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_BUCKET_NAME", "neondb")
     AWS_S3_FILE_OVERWRITE = False
-    AWS_QUERYSTRING_AUTH = False  # public URLs without signed params
-    MEDIA_URL = f"{_S3_ENDPOINT}/{AWS_STORAGE_BUCKET_NAME}/"
+    AWS_QUERYSTRING_AUTH = False
+    AWS_S3_ADDRESSING_STYLE = "path"
+    MEDIA_URL = f"{_S3_ENDPOINT}/{AWS_STORAGE_BUCKET_NAME}/media/"
 
 CSRF_TRUSTED_ORIGINS = ["https://www.mdbarish.in", "https://mdbarish.in"]
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
