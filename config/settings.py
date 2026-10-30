@@ -59,10 +59,8 @@ STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "public" / "static"]
 # Use hashed storage locally; on Vercel public/ is served directly so use simple storage
-STATICFILES_STORAGE = (
-    "whitenoise.storage.CompressedStaticFilesStorage" if _ON_VERCEL
-    else "whitenoise.storage.CompressedManifestStaticFilesStorage"
-)
+# CompressedManifestStaticFilesStorage writes a manifest file — not safe on Vercel
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
