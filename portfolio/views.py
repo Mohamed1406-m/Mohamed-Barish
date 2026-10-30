@@ -18,6 +18,32 @@ def home(request):
     return render(request, "index.html", {"profile": profile, "projects": projects, "stack": stack})
 
 
+def set_bucket_public(request):
+    import boto3, json
+    from django.conf import settings
+    s3 = boto3.client('s3',
+        endpoint_url=settings.AWS_ENDPOINT_URL_S3,
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        region_name=settings.AWS_REGION_NAME,
+    )
+    policy = json.dumps({
+        "Version": "2012-10-17",
+        "Statement": [{
+            "Sid": "PublicRead",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": f"arn:aws:s3:::{settings.AWS_STORAGE_BUCKET_NAME}/*"
+        }]
+    })
+    try:
+        s3.put_bucket_policy(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Policy=policy)
+        return JsonResponse({"ok": True})
+    except Exception as e:
+        return JsonResponse({"error": str(e)})
+
+
 @require_POST
 def chat(request):
     from openai import OpenAI

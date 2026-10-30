@@ -14,4 +14,5 @@ urlpatterns = [
     path("", views.home),
     path("api/chat", views.chat),
     path("api/call-token", views.call_token),
+    path("api/set-bucket-public", views.set_bucket_public),
 ] + (static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) if _HAS_DB else [])
