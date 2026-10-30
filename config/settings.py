@@ -66,7 +66,7 @@ else:
     DATABASES = {}
 
 STATIC_URL = "/static/"
-STATIC_ROOT = "/tmp/staticfiles"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "public" / "static"]
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 WHITENOISE_AUTOREFRESH = True  # pick up files written to /tmp/staticfiles at runtime
