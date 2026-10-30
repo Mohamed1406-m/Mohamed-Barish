@@ -90,7 +90,7 @@ if _S3_ENDPOINT:
     AWS_QUERYSTRING_AUTH = False
     AWS_S3_ADDRESSING_STYLE = "path"
     AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
-    MEDIA_URL = f"{_S3_ENDPOINT}/neondb/"
+    MEDIA_URL = "/media/"
 
 CSRF_TRUSTED_ORIGINS = ["https://www.mdbarish.in", "https://mdbarish.in"]
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

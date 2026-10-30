@@ -18,6 +18,27 @@ def home(request):
     return render(request, "index.html", {"profile": profile, "projects": projects, "stack": stack})
 
 
+def media_proxy(request, path):
+    """Proxy media files from Neon S3 (no public bucket support)"""
+    import boto3
+    from django.conf import settings
+    from django.http import HttpResponse, Http404
+    try:
+        s3 = boto3.client('s3',
+            endpoint_url=settings.AWS_ENDPOINT_URL_S3,
+            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+            region_name=settings.AWS_REGION_NAME,
+        )
+        obj = s3.get_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=path)
+        content_type = obj['ContentType']
+        response = HttpResponse(obj['Body'].read(), content_type=content_type)
+        response['Cache-Control'] = 'public, max-age=86400'
+        return response
+    except Exception:
+        raise Http404
+
+
 def set_bucket_public(request):
     import boto3, json
     from django.conf import settings
