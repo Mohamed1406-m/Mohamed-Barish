@@ -4,8 +4,18 @@ from django.shortcuts import render
 from django.views.decorators.http import require_POST
 from .data import SYSTEM
 
+
 def home(request):
-    return render(request, "index.html")
+    from .models import Profile, Project, StackItem
+    profile = Profile.objects.first()
+    projects = Project.objects.filter(is_active=True)
+    stack = StackItem.objects.filter(is_active=True)
+    return render(request, "index.html", {
+        "profile": profile,
+        "projects": projects,
+        "stack": stack,
+    })
+
 
 @require_POST
 def chat(request):
@@ -20,10 +30,11 @@ def chat(request):
         r = client.chat.completions.create(
             model="openai/gpt-oss-20b", max_tokens=800, extra_body={"reasoning_effort": "low"},
             messages=[{"role": "system", "content": SYSTEM}, *msgs])
-        return JsonResponse({"reply": r.choices[0].message.content or "Sorry, I could not answer that. Please try again."})
-    except Exception as e:  # shows in Vercel logs as CHAT ERROR
+        return JsonResponse({"reply": r.choices[0].message.content or "Sorry, I could not answer that."})
+    except Exception as e:
         print("CHAT ERROR:", type(e).__name__, str(e)[:300])
         return JsonResponse({"error": type(e).__name__}, status=502)
+
 
 @require_POST
 def call_token(request):
