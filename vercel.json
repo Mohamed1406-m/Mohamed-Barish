@@ -1,3 +1,5 @@
 {
+  "buildCommand": "python manage.py migrate --noinput && python manage.py collectstatic --noinput",
+  "outputDirectory": "staticfiles",
   "rewrites": [{ "source": "/(.*)", "destination": "/api/index" }]
 }
