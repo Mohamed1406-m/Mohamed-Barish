@@ -18,29 +18,6 @@ def home(request):
     return render(request, "index.html", {"profile": profile, "projects": projects, "stack": stack})
 
 
-def debug_env(request):
-    import boto3
-    from django.conf import settings
-    try:
-        s3 = boto3.client(
-            's3',
-            endpoint_url=settings.AWS_ENDPOINT_URL_S3,
-            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-            region_name=settings.AWS_REGION_NAME,
-        )
-        # Create bucket if it doesn't exist
-        try:
-            s3.create_bucket(Bucket=settings.AWS_STORAGE_BUCKET_NAME)
-            created = True
-        except Exception as ce:
-            created = str(ce)
-        buckets = [b['Name'] for b in s3.list_buckets().get('Buckets', [])]
-        return JsonResponse({"buckets": buckets, "created": created})
-    except Exception as e:
-        return JsonResponse({"error": str(e)})
-
-
 @require_POST
 def chat(request):
     from openai import OpenAI
