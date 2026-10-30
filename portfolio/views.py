@@ -18,6 +18,19 @@ def home(request):
     return render(request, "index.html", {"profile": profile, "projects": projects, "stack": stack})
 
 
+def debug_env(request):
+    """Temporary: remove after fixing S3"""
+    return JsonResponse({
+        "AWS_ENDPOINT_URL_S3": bool(os.getenv("AWS_ENDPOINT_URL_S3")),
+        "AWS_ACCESS_KEY_ID": bool(os.getenv("AWS_ACCESS_KEY_ID")),
+        "AWS_SECRET_ACCESS_KEY": bool(os.getenv("AWS_SECRET_ACCESS_KEY")),
+        "AWS_BUCKET_NAME": os.getenv("AWS_BUCKET_NAME", "NOT SET"),
+        "VERCEL": os.getenv("VERCEL", "NOT SET"),
+        "DATABASE_URL": bool(os.getenv("DATABASE_URL")),
+        "STORAGES_backend": str(getattr(__import__('django.conf', fromlist=['settings']).settings, 'STORAGES', {}).get('default', {}).get('BACKEND', 'NOT SET')),
+    })
+
+
 @require_POST
 def chat(request):
     from openai import OpenAI
