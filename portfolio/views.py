@@ -20,15 +20,27 @@ def home(request):
 
 def debug_env(request):
     """Temporary: remove after fixing S3"""
-    return JsonResponse({
-        "AWS_ENDPOINT_URL_S3": bool(os.getenv("AWS_ENDPOINT_URL_S3")),
-        "AWS_ACCESS_KEY_ID": bool(os.getenv("AWS_ACCESS_KEY_ID")),
-        "AWS_SECRET_ACCESS_KEY": bool(os.getenv("AWS_SECRET_ACCESS_KEY")),
-        "AWS_BUCKET_NAME": os.getenv("AWS_BUCKET_NAME", "NOT SET"),
-        "VERCEL": os.getenv("VERCEL", "NOT SET"),
-        "DATABASE_URL": bool(os.getenv("DATABASE_URL")),
-        "STORAGES_backend": str(getattr(__import__('django.conf', fromlist=['settings']).settings, 'STORAGES', {}).get('default', {}).get('BACKEND', 'NOT SET')),
-    })
+    import boto3
+    from django.conf import settings
+    result = {
+        "STORAGES_backend": str(settings.STORAGES.get('default', {}).get('BACKEND', 'NOT SET')),
+        "AWS_STORAGE_BUCKET_NAME": settings.AWS_STORAGE_BUCKET_NAME,
+        "AWS_ENDPOINT_URL_S3": settings.AWS_ENDPOINT_URL_S3,
+        "AWS_REGION_NAME": settings.AWS_REGION_NAME,
+    }
+    try:
+        s3 = boto3.client(
+            's3',
+            endpoint_url=settings.AWS_ENDPOINT_URL_S3,
+            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+            region_name=settings.AWS_REGION_NAME,
+        )
+        buckets = [b['Name'] for b in s3.list_buckets().get('Buckets', [])]
+        result['buckets'] = buckets
+    except Exception as e:
+        result['bucket_error'] = str(e)
+    return JsonResponse(result)
 
 
 @require_POST
