@@ -3,4 +3,4 @@ openai>=1.40
 livekit-api>=0.7
 whitenoise>=6.7
 Pillow>=10.0
-psycopg2-binary>=2.9
+psycopg[binary]>=3.1

@@ -52,21 +52,13 @@ TEMPLATES = [{
 WSGI_APPLICATION = "config.wsgi.application"
 
 # Database — Neon PostgreSQL when DATABASE_URL is set, else local SQLite
+import urllib.parse as _up
 _db_url = os.getenv("DATABASE_URL")
 if _db_url:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": _db_url.split("/")[-1].split("?")[0],
-            "OPTIONS": {"service": None},
-        }
-    }
-    # Use dj-database-url style parsing
-    import urllib.parse as _up
     _p = _up.urlparse(_db_url)
     DATABASES = {"default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": _p.path.lstrip("/").split("?")[0],
+        "NAME": _p.path.lstrip("/"),
         "USER": _p.username,
         "PASSWORD": _p.password,
         "HOST": _p.hostname,
