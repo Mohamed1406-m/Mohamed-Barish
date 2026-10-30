@@ -19,15 +19,8 @@ def home(request):
 
 
 def debug_env(request):
-    """Temporary: remove after fixing S3"""
     import boto3
     from django.conf import settings
-    result = {
-        "STORAGES_backend": str(settings.STORAGES.get('default', {}).get('BACKEND', 'NOT SET')),
-        "AWS_STORAGE_BUCKET_NAME": settings.AWS_STORAGE_BUCKET_NAME,
-        "AWS_ENDPOINT_URL_S3": settings.AWS_ENDPOINT_URL_S3,
-        "AWS_REGION_NAME": settings.AWS_REGION_NAME,
-    }
     try:
         s3 = boto3.client(
             's3',
@@ -36,11 +29,16 @@ def debug_env(request):
             aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
             region_name=settings.AWS_REGION_NAME,
         )
+        # Create bucket if it doesn't exist
+        try:
+            s3.create_bucket(Bucket=settings.AWS_STORAGE_BUCKET_NAME)
+            created = True
+        except Exception as ce:
+            created = str(ce)
         buckets = [b['Name'] for b in s3.list_buckets().get('Buckets', [])]
-        result['buckets'] = buckets
+        return JsonResponse({"buckets": buckets, "created": created})
     except Exception as e:
-        result['bucket_error'] = str(e)
-    return JsonResponse(result)
+        return JsonResponse({"error": str(e)})
 
 
 @require_POST
