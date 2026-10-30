@@ -6,6 +6,9 @@ from .data import SYSTEM
 
 
 def home(request):
+    import os
+    if os.getenv("VERCEL") == "1":
+        return render(request, "index.html", {"profile": None, "projects": [], "stack": []})
     from .models import Profile, Project, StackItem
     profile = Profile.objects.first()
     projects = Project.objects.filter(is_active=True)
