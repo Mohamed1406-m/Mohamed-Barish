@@ -67,7 +67,10 @@ else:
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "public" / "static"]
+# CompressedStaticFilesStorage works without collectstatic at build time
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+# Tell WhiteNoise to also serve from STATICFILES_DIRS directly
+WHITENOISE_ROOT = BASE_DIR / "public" / "static"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
