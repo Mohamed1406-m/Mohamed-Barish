@@ -4,20 +4,18 @@ from django.shortcuts import render
 from django.views.decorators.http import require_POST
 from .data import SYSTEM
 
+_HAS_DB = bool(os.getenv("DATABASE_URL")) or not (os.getenv("VERCEL") == "1")
+
 
 def home(request):
-    import os
-    if os.getenv("VERCEL") == "1":
-        return render(request, "index.html", {"profile": None, "projects": [], "stack": []})
-    from .models import Profile, Project, StackItem
-    profile = Profile.objects.first()
-    projects = Project.objects.filter(is_active=True)
-    stack = StackItem.objects.filter(is_active=True)
-    return render(request, "index.html", {
-        "profile": profile,
-        "projects": projects,
-        "stack": stack,
-    })
+    if _HAS_DB:
+        from .models import Profile, Project, StackItem
+        profile = Profile.objects.first()
+        projects = Project.objects.filter(is_active=True)
+        stack = StackItem.objects.filter(is_active=True)
+    else:
+        profile, projects, stack = None, [], []
+    return render(request, "index.html", {"profile": profile, "projects": projects, "stack": stack})
 
 
 @require_POST

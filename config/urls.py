@@ -4,14 +4,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 from portfolio import views
 
-_ON_VERCEL = os.getenv("VERCEL") == "1"
+_HAS_DB = bool(os.getenv("DATABASE_URL")) or not (os.getenv("VERCEL") == "1")
 
-if not _ON_VERCEL:
+if _HAS_DB:
     from django.contrib import admin
 
 urlpatterns = [
-    *([] if _ON_VERCEL else [path("admin/", admin.site.urls)]),
+    *([path("admin/", admin.site.urls)] if _HAS_DB else []),
     path("", views.home),
     path("api/chat", views.chat),
     path("api/call-token", views.call_token),
-] + ([] if _ON_VERCEL else static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT))
+] + (static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) if _HAS_DB else [])
