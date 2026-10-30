@@ -52,19 +52,10 @@ TEMPLATES = [{
 WSGI_APPLICATION = "config.wsgi.application"
 
 # Database — Neon PostgreSQL when DATABASE_URL is set, else local SQLite
-import urllib.parse as _up
+import dj_database_url
 _db_url = os.getenv("DATABASE_URL")
 if _db_url:
-    _p = _up.urlparse(_db_url)
-    DATABASES = {"default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": _p.path.lstrip("/"),
-        "USER": _p.username,
-        "PASSWORD": _p.password,
-        "HOST": _p.hostname,
-        "PORT": _p.port or 5432,
-        "OPTIONS": {"sslmode": "require"},
-    }}
+    DATABASES = {"default": dj_database_url.parse(_db_url, conn_max_age=600, ssl_require=True)}
 elif not (os.getenv("VERCEL") == "1"):
     DATABASES = {"default": {
         "ENGINE": "django.db.backends.sqlite3",
