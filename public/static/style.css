@@ -260,14 +260,21 @@ h2 {
   background: #f8f7f3;
 }
 .b {
-  max-width: 80%; padding: 10px 16px; border-radius: 14px;
-  font-size: .92rem; line-height: 1.5;
+  max-width: 80%; padding: 12px 16px; border-radius: 14px;
+  font: 400 .95rem/1.6 "Inter", system-ui, sans-serif; color: #1e293b;
+  letter-spacing: -.005em; overflow-wrap: anywhere;
   background: #fff; border: 1px solid var(--border);
   box-shadow: 0 1px 4px rgba(0,0,0,.05);
 }
+.b.bot { border-bottom-left-radius: 4px; }
+.b p + p, .b p + ul, .b ul + p { margin-top: 8px; }
+.b ul { padding-left: 18px; display: grid; gap: 4px; }
+.b strong { font-weight: 600; color: var(--ink); }
+.b a { color: var(--green2); text-decoration: underline; text-underline-offset: 2px; }
+.b.typing { color: var(--muted); font-style: italic; }
 .b.me {
   align-self: flex-end; background: var(--navy);
-  color: #fff; border-color: transparent;
+  color: #fff; border-color: transparent; border-bottom-right-radius: 4px;
 }
 .chips {
   display: flex; flex-wrap: wrap; gap: 8px;
@@ -327,8 +334,6 @@ form button:hover { background: var(--navy2); }
   justify-content: space-between; align-items: center;
   font-size: .85rem;
 }
-.footer-admin { color: rgba(255,200,61,.5); transition: color .2s; }
-.footer-admin:hover { color: var(--accent); }
 
 /* ── Scroll reveal ──────────────────────────────────────────────────────── */
 .reveal { transition: opacity .5s ease, transform .5s ease; }

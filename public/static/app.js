@@ -25,13 +25,28 @@ const add = (t, c) => {
   const d = document.createElement('div'); d.className = 'b ' + c; d.textContent = t;
   log.append(d); log.scrollTop = log.scrollHeight; return d;
 };
+// Minimal, escape-first markdown: **bold**, "- " bullets, paragraphs, bare links/emails
+const md = t => {
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const inline = s => esc(s)
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/(https?:\/\/[^\s<)]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>')
+    .replace(/([\w.+-]+@[\w-]+\.[\w.]+\w)/g, '<a href="mailto:$1">$1</a>');
+  return t.trim().split(/\n{2,}/).map(block => {
+    const lines = block.split('\n');
+    if (lines.every(l => /^\s*[-*•]\s+/.test(l)))
+      return '<ul>' + lines.map(l => '<li>' + inline(l.replace(/^\s*[-*•]\s+/, '')) + '</li>').join('') + '</ul>';
+    return '<p>' + lines.map(inline).join('<br>') + '</p>';
+  }).join('');
+};
 document.getElementById('f').onsubmit = async e => {
   e.preventDefault(); const t = q.value.trim(); if (!t) return; q.value = '';
-  add(t, 'me'); hist.push({ role: 'user', content: t }); const w = add('Typing…', 'bot');
+  add(t, 'me'); hist.push({ role: 'user', content: t }); const w = add('Typing…', 'bot typing');
   try {
     const r = await post('/api/chat', { messages: hist }); const j = await r.json(); if (!r.ok) throw 0;
-    w.textContent = j.reply; hist.push({ role: 'assistant', content: j.reply });
+    w.innerHTML = md(j.reply); hist.push({ role: 'assistant', content: j.reply });
   } catch { w.textContent = 'Chatbot unavailable. Email mdbarish1502@gmail.com instead.'; }
+  w.classList.remove('typing'); log.scrollTop = log.scrollHeight;
 };
 document.querySelectorAll('.chip').forEach(chip => {
   chip.addEventListener('click', () => { q.value = chip.textContent; document.getElementById('f').requestSubmit(); });

@@ -65,6 +65,24 @@ def set_bucket_public(request):
         return JsonResponse({"error": str(e)})
 
 
+def _site_knowledge():
+    """Projects and stack edited in Django admin, so the bot stays in sync with the page"""
+    if not _HAS_DB:
+        return ""
+    try:
+        from .models import Project, StackItem
+        projects = [f"- {p.title} ({p.client}): {p.description} Tech: {p.tags}" for p in Project.objects.filter(is_active=True)]
+        stack = ", ".join(s.name for s in StackItem.objects.filter(is_active=True))
+    except Exception:
+        return ""
+    out = ""
+    if projects:
+        out += "\n\n## Projects listed on the site\n" + "\n".join(projects)
+    if stack:
+        out += "\n\n## Stack listed on the site\n- " + stack
+    return out
+
+
 @require_POST
 def chat(request):
     from openai import OpenAI
@@ -77,7 +95,7 @@ def chat(request):
         client = OpenAI(api_key=os.environ["GROQ_API_KEY"].strip(), base_url="https://api.groq.com/openai/v1", timeout=25)
         r = client.chat.completions.create(
             model="openai/gpt-oss-20b", max_tokens=800, extra_body={"reasoning_effort": "low"},
-            messages=[{"role": "system", "content": SYSTEM}, *msgs])
+            messages=[{"role": "system", "content": SYSTEM + _site_knowledge()}, *msgs])
         return JsonResponse({"reply": r.choices[0].message.content or "Sorry, I could not answer that."})
     except Exception as e:
         print("CHAT ERROR:", type(e).__name__, str(e)[:300])
