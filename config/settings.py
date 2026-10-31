@@ -78,7 +78,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 _S3_ENDPOINT = os.getenv("AWS_ENDPOINT_URL_S3")
 if _S3_ENDPOINT:
     STORAGES = {
-        "default": {"BACKEND": "storages.backends.s3boto3.S3Boto3Storage"},
+        "default": {"BACKEND": "portfolio.storage.ProxiedS3Storage"},
         "staticfiles": {"BACKEND": "whitenoise.storage.CompressedStaticFilesStorage"},
     }
     AWS_ENDPOINT_URL_S3 = _S3_ENDPOINT
